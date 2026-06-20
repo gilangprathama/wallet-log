@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <div className="flex h-screen overflow-hidden">
+        <div className="flex h-[100dvh] overflow-hidden">
           {/* Desktop sidebar */}
           <aside className="hidden lg:flex lg:w-60 xl:w-64 flex-shrink-0 flex-col">
             <Sidebar />

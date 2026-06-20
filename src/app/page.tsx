@@ -68,12 +68,14 @@ export default function DashboardPage() {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex items-center justify-between gap-4">
+        <div className="min-w-0 flex-1">
           <h1 className="text-2xl font-bold text-slate-100">Dashboard</h1>
           <p className="text-slate-500 text-sm mt-0.5">Financial overview</p>
         </div>
-        <MonthNavigator />
+        <div className="flex-shrink-0">
+          <MonthNavigator />
+        </div>
       </div>
 
       {/* Summary cards */}

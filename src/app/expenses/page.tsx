@@ -173,12 +173,14 @@ export default function ExpensesPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
+      <div className="flex items-center justify-between gap-4">
+        <div className="min-w-0 flex-1">
           <h1 className="text-2xl font-bold text-slate-100">Expenses</h1>
           <p className="text-slate-500 text-sm mt-0.5">Manage expense groups and items</p>
         </div>
-        <MonthNavigator />
+        <div className="flex-shrink-0">
+          <MonthNavigator />
+        </div>
       </div>
 
       {/* Action row */}
@@ -222,9 +224,9 @@ export default function ExpensesPage() {
                     ) : (
                       <ChevronRight size={16} className="text-slate-400 flex-shrink-0" />
                     )}
-                    <span className="text-slate-100 font-semibold truncate">{group.name}</span>
-                    <span className="text-slate-500 text-sm ml-1">
-                      ({group.items.length} item{group.items.length !== 1 ? 's' : ''})
+                    <span className="text-slate-100 font-semibold truncate flex-1 min-w-0">{group.name}</span>
+                    <span className="text-slate-500 text-xs flex-shrink-0">
+                      {group.items.length} item{group.items.length !== 1 ? 's' : ''}
                     </span>
                   </button>
                   <div className="flex items-center gap-2 flex-shrink-0">
@@ -256,8 +258,8 @@ export default function ExpensesPage() {
                       </div>
                     ) : (
                       <div>
-                        {/* Column headers */}
-                        <div className="flex items-center px-4 py-2 text-xs font-medium text-slate-500 border-b border-midnight-border">
+                        {/* Column headers — desktop only */}
+                        <div className="hidden sm:flex items-center px-4 py-2 text-xs font-medium text-slate-500 border-b border-midnight-border">
                           <span className="flex-1">Item</span>
                           <span className="w-28 text-right">Price</span>
                           <span className="w-10 text-center">Qty</span>
@@ -266,36 +268,72 @@ export default function ExpensesPage() {
                         </div>
                         <div className="divide-y divide-midnight-border">
                           {group.items.map((item) => (
-                            <div
-                              key={item.id}
-                              className="flex items-start px-4 py-3 hover:bg-midnight-surface-2 transition-colors"
-                            >
-                              <div className="flex-1 min-w-0 pr-3">
-                                <p className="text-slate-200 text-sm leading-snug">{item.name}</p>
-                                {item.note && (
-                                  <p className="text-slate-500 text-xs mt-0.5">{item.note}</p>
-                                )}
+                            <div key={item.id} className="hover:bg-midnight-surface-2 transition-colors">
+                              {/* Mobile layout */}
+                              <div className="sm:hidden flex items-start gap-3 px-4 py-3">
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-slate-200 text-sm font-medium leading-snug">{item.name}</p>
+                                  {item.note && (
+                                    <p className="text-slate-500 text-xs mt-0.5">{item.note}</p>
+                                  )}
+                                  <p className="text-slate-500 text-xs mt-1 tabular-nums">
+                                    {formatIDR(item.price ?? item.amount)}
+                                    {(item.quantity ?? 1) > 1 && (
+                                      <span> × {item.quantity ?? 1}</span>
+                                    )}
+                                  </p>
+                                </div>
+                                <span className="text-slate-100 text-sm font-semibold tabular-nums shrink-0 pt-0.5">
+                                  {formatIDR(item.amount)}
+                                </span>
+                                <div className="flex items-center gap-0.5 shrink-0">
+                                  <button
+                                    onClick={() => openEditItem(group.id, item)}
+                                    className="p-2 rounded text-slate-500 hover:text-blue-400 hover:bg-blue-400/10 transition-colors"
+                                    aria-label="Edit item"
+                                  >
+                                    <Pencil size={14} />
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      setDeleteState({ type: 'item', groupId: group.id, itemId: item.id })
+                                    }
+                                    className="p-2 rounded text-slate-500 hover:text-red-400 hover:bg-red-400/10 transition-colors"
+                                    aria-label="Delete item"
+                                  >
+                                    <Trash2 size={14} />
+                                  </button>
+                                </div>
                               </div>
-                              <span className="w-28 text-slate-400 text-sm text-right tabular-nums shrink-0 pt-0.5">{formatIDR(item.price ?? item.amount)}</span>
-                              <span className="w-10 text-slate-400 text-sm text-center tabular-nums shrink-0 pt-0.5">{item.quantity ?? 1}</span>
-                              <span className="w-28 text-slate-100 text-sm font-semibold text-right tabular-nums shrink-0 pt-0.5">{formatIDR(item.amount)}</span>
-                              <div className="w-20 flex items-center justify-end gap-1 shrink-0 pl-3">
-                                <button
-                                  onClick={() => openEditItem(group.id, item)}
-                                  className="p-1.5 rounded text-slate-500 hover:text-blue-400 hover:bg-blue-400/10 transition-colors"
-                                  aria-label="Edit item"
-                                >
-                                  <Pencil size={13} />
-                                </button>
-                                <button
-                                  onClick={() =>
-                                    setDeleteState({ type: 'item', groupId: group.id, itemId: item.id })
-                                  }
-                                  className="p-1.5 rounded text-slate-500 hover:text-red-400 hover:bg-red-400/10 transition-colors"
-                                  aria-label="Delete item"
-                                >
-                                  <Trash2 size={13} />
-                                </button>
+                              {/* Desktop layout */}
+                              <div className="hidden sm:flex items-start px-4 py-3">
+                                <div className="flex-1 min-w-0 pr-3">
+                                  <p className="text-slate-200 text-sm leading-snug">{item.name}</p>
+                                  {item.note && (
+                                    <p className="text-slate-500 text-xs mt-0.5">{item.note}</p>
+                                  )}
+                                </div>
+                                <span className="w-28 text-slate-400 text-sm text-right tabular-nums shrink-0 pt-0.5">{formatIDR(item.price ?? item.amount)}</span>
+                                <span className="w-10 text-slate-400 text-sm text-center tabular-nums shrink-0 pt-0.5">{item.quantity ?? 1}</span>
+                                <span className="w-28 text-slate-100 text-sm font-semibold text-right tabular-nums shrink-0 pt-0.5">{formatIDR(item.amount)}</span>
+                                <div className="w-20 flex items-center justify-end gap-1 shrink-0 pl-3">
+                                  <button
+                                    onClick={() => openEditItem(group.id, item)}
+                                    className="p-1.5 rounded text-slate-500 hover:text-blue-400 hover:bg-blue-400/10 transition-colors"
+                                    aria-label="Edit item"
+                                  >
+                                    <Pencil size={13} />
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      setDeleteState({ type: 'item', groupId: group.id, itemId: item.id })
+                                    }
+                                    className="p-1.5 rounded text-slate-500 hover:text-red-400 hover:bg-red-400/10 transition-colors"
+                                    aria-label="Delete item"
+                                  >
+                                    <Trash2 size={13} />
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           ))}

@@ -30,12 +30,12 @@ export default function Sidebar({ onNavClick }: SidebarProps) {
   return (
     <div className="flex flex-col h-full bg-midnight-surface border-r border-midnight-border">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-6 py-5 border-b border-midnight-border">
+      <Link href="/" onClick={onNavClick} className="flex items-center gap-3 px-6 py-5 border-b border-midnight-border hover:opacity-80 transition-opacity">
         <div className="p-2 rounded-lg bg-blue-500/20">
           <Wallet size={20} className="text-blue-400" />
         </div>
         <span className="text-slate-100 font-bold text-lg tracking-tight">WalletLog</span>
-      </div>
+      </Link>
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-1">
