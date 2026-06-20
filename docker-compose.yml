@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: walletlog-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: walletlog
+      POSTGRES_USER: walletlog
+      POSTGRES_PASSWORD: walletlog123
+    ports:
+      - "5432:5432"
+    volumes:
+      - walletlog_pgdata:/var/lib/postgresql/data
+
+volumes:
+  walletlog_pgdata:

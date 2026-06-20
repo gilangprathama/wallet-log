@@ -1,36 +1,115 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WalletLog
 
-## Getting Started
+Family financial tracker — income, expenses, balance, and monthly statistics. Built with Next.js 14, TypeScript, Tailwind CSS, Prisma, and PostgreSQL.
 
-First, run the development server:
+## Features
+
+- CRUD income sources (salary, bonus, THR, etc.)
+- CRUD expense groups with items (price × quantity)
+- Remaining balance with color indicator (green / yellow / red)
+- Expense breakdown with progress bars
+- Statistics: pie chart, 6-month bar chart
+- 3-month sliding window navigation
+- Copy data from previous month
+- IDR currency formatting
+
+## Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **ORM**: Prisma
+- **Database**: PostgreSQL
+- **State**: Zustand
+
+## Prerequisites
+
+- Node.js 18+
+- PostgreSQL 14+ (local install or Docker)
+
+## Local Setup
+
+### 1. Clone the repo
+
+```bash
+git clone git@github.com:gilangprathama/wallet-log.git
+cd wallet-log
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Setup PostgreSQL
+
+**Option A — Homebrew (macOS)**
+```bash
+brew install postgresql@16
+brew services start postgresql@16
+createuser -s walletlog
+createdb -O walletlog walletlog
+psql -c "ALTER USER walletlog WITH PASSWORD 'walletlog123';"
+```
+
+**Option B — Docker**
+```bash
+docker compose up -d
+```
+
+### 4. Configure environment
+
+```bash
+cp .env.example .env
+```
+
+`.env` default (matches both options above):
+```
+DATABASE_URL="postgresql://walletlog:walletlog123@localhost:5432/walletlog"
+```
+
+### 5. Push schema & seed data
+
+```bash
+npx prisma db push
+npx tsx prisma/seed.ts
+```
+
+### 6. Run dev server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Database Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | Description |
+|---|---|
+| `npm run db:seed` | Seed sample data for current month |
+| `npm run db:studio` | Open Prisma Studio (DB GUI) |
+| `npm run db:migrate` | Run Prisma migrations (requires CREATEDB privilege) |
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+├── app/
+│   ├── api/          # API routes (income, expenses, months)
+│   ├── expenses/     # Expenses page
+│   ├── income/       # Income page
+│   ├── statistics/   # Statistics page
+│   └── page.tsx      # Dashboard
+├── components/
+│   ├── layout/       # Sidebar, MobileHeader
+│   └── ui/           # Modal, MonthNavigator, etc.
+├── hooks/            # useMonthData, useMonthNavigation
+├── lib/              # Prisma client, utils
+├── store/            # Zustand store
+└── types/            # TypeScript interfaces
+prisma/
+├── schema.prisma     # Database schema
+└── seed.ts           # Seed script
+```
